@@ -2,7 +2,8 @@ import numpy as np
 import os
 import shutil
 import re
-
+dist_thresh=500      #if person move too fast; it will base on this thresh to think if it is a new target (edge case handle)
+inactive_thresh=30   #how many frames of inactivity we decide to not consider some target (cache mechanism)
 def sort_output(output,image_order,y):
     #replace the indexing with the real indexing 
     temp_indx=0
@@ -97,7 +98,7 @@ def find_nn(output,target_dir,data_dir,y):
                     dist_pool.append(norm2(pool_coord[j],center_coords[i]))
                 #upper thresh for movement
                 print(min(dist_pool),'   ===  ',frame+"_"+str(y[i])+"person.png")
-                if min(dist_pool)<500:
+                if min(dist_pool)<dist_thresh:
                     #which pool to put in
                     nn_indx=np.argmin(dist_pool)
                     #update pool coordinates
@@ -133,7 +134,7 @@ def find_nn(output,target_dir,data_dir,y):
                 dist_pool.append(norm2(pool_coord[j],center_coords[i]))
             #upper thresh for movement
             print (min(dist_pool),'   ===  ',frame+"_"+str(y[i])+"person.png")
-            if min(dist_pool)<500:
+            if min(dist_pool)<dist_thresh:
                 #which pool to put in
                 nn_indx=np.argmin(dist_pool)
                 #update pool coordinates
@@ -162,7 +163,7 @@ def find_nn(output,target_dir,data_dir,y):
             image_counter+=1
             print (pool_activity)
             for ac in range(0,len(pool_activity)):
-                if pool_activity[ac]>=30:
+                if pool_activity[ac]>=inactive_thresh:
                     pool_coord[ac]=(9999999,9999999);
 
     #print (pool_coord)
