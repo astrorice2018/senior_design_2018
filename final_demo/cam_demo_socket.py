@@ -170,7 +170,13 @@ if __name__ == '__main__':
 		
 		ret, frame = cap.read() #get the image
 		#frame=cv2.imread(data_dir+'/83.png')
-		
+        try:
+            shape0=frame.shape[0]
+            if shape==0:
+                continue
+        except:
+            continue
+	
 		if ret:
 			img, orig_im, dim = prep_image(frame, inp_dim)
 			

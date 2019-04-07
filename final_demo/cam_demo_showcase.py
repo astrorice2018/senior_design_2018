@@ -19,7 +19,7 @@ from PIL import Image
 from torchvision import datasets, transforms, models
 from model import ft_net
 data_dir='/home/luke/'
-target=0
+target=4
 test_transforms = transforms.Compose([transforms.Resize(size=(256,128),interpolation=3),transforms.ToTensor(),transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 device=torch.device('cpu')
 imsize = 256
@@ -134,27 +134,26 @@ if __name__ == '__main__':
 	
 	videofile = 'video.avi'
 	
-	cap = cv2.VideoCapture(0)
+	#cap = cv2.VideoCapture(0)
 	
-	assert cap.isOpened(), 'Cannot capture source'
+	#assert cap.isOpened(), 'Cannot capture source'
 	
 	frames = 0
 	start = time.time()
 	frame_id=0	  
-	while cap.isOpened():
+	#while cap.isOpened():
+	while True:
 		#loop control
 		
-		ret, frame = cap.read() #get the image
-		frame=cv2.imread(data_dir+'/83.png')
-        try:
-            shape0=frame.shape[0]
-            if shape==0:
-                continue
-        except:
-            continue
-	
-		if ret:
-			
+		#ret, frame = cap.read() #get the image
+		try:
+			frame=cv2.imread(data_dir+'/test.png')
+			shape0=frame.shape[0]
+			if shape==0:
+				continue
+		except:
+			continue
+		if True:
 			img, orig_im, dim = prep_image(frame, inp_dim)
 			
 #			 im_dim = torch.FloatTensor(dim).repeat(1,2)						
@@ -175,9 +174,9 @@ if __name__ == '__main__':
 				frames += 1
 				print("FPS of the video is {:5.2f}".format( frames / (time.time() - start)))
 				#cv2.imshow("frame", orig_im)
-				key = cv2.waitKey(1)
-				if key & 0xFF == ord('q'):
-					break
+				#key = cv2.waitKey(1)
+				#if key & 0xFF == ord('q'):
+				#	break
 				continue
 			
 
@@ -237,6 +236,7 @@ if __name__ == '__main__':
 			#but the parameters may be useful for the use elsewhere
  
 			#cv2.imshow("frame", orig_im)
+			np.save('coord0.npy',output[:,1:5])
 			for i in range(0,len(output)):
 				x1=int(output[i,1])
 				y1=int(output[i,2])
@@ -247,16 +247,15 @@ if __name__ == '__main__':
 					img_temp = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB)
 					im_pil = Image.fromarray(img_temp[y1:y2,x1:x2])
 					astro_result=predict_image(im_pil)
-					print(astro_result)
 					if astro_result==target:
 						cv2.putText(orig_im, 'Target_found', (x1, y1), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
-			cv2.imwrite(data_dir+'/target_found.png',orig_im)						
+			#cv2.imwrite(data_dir+'/target_found.png',orig_im)						
 
 						 
 				
-			key = cv2.waitKey(1)
-			if key & 0xFF == ord('q'):
-				break
+			#key = cv2.waitKey(1)
+			#if key & 0xFF == ord('q'):
+			#	break
 		#	frames += 1
 			print("FPS of the video is {:5.2f}".format( frames / (time.time() - start)))
 		#	with open(data_dir+'/'+'status','r') as file:
@@ -267,7 +266,7 @@ if __name__ == '__main__':
 		#	open(data_dir+'/'+'status', 'w').close()
 		#	with open(data_dir+'/'+'status','w') as file:
 		#		file.writelines(txtlines)
-			exit()
+		#	exit()
 			
 		else:
 			break
