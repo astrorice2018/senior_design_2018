@@ -21,7 +21,8 @@ from model import ft_net
 data_dir='/home/luke/'
 target=4
 cvbb=False 
-
+class_num=2
+net_used='net_test.pth'
 if cvbb:
 	timeout=1
 else:
@@ -29,20 +30,20 @@ else:
 test_transforms = transforms.Compose([transforms.Resize(size=(256,128),interpolation=3),transforms.ToTensor(),transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 device=torch.device('cpu')
 imsize = 256
-model1=ft_net(6)
+model1=ft_net(class_num)
 #model.load_state_dict(torch.load(file_path))
-model1.load_state_dict(torch.load('net_9.pth'))
+model1.load_state_dict(torch.load(net_used))
 model1.eval()
 def predict_image(image):
-    #image=Image.open(image_p)
-    image_tensor = test_transforms(image).float()
-    image_tensor = image_tensor.unsqueeze_(0)
-    input = Variable(image_tensor)
-    input = input.to(device)
-    print (input.shape)
-    output = model1(input)
-    index = output.data.cpu().numpy().argmax()
-    return index
+	#image=Image.open(image_p)
+	image_tensor = test_transforms(image).float()
+	image_tensor = image_tensor.unsqueeze_(0)
+	input = Variable(image_tensor)
+	input = input.to(device)
+	print (input.shape)
+	output = model1(input)
+	index = output.data.cpu().numpy().argmax()
+	return index
 
 
 
@@ -81,7 +82,7 @@ def write(x, img,frame_id,y):
 	label = "{0}".format(classes[cls])
 	if str(label)=='person':
 		print('person!!!!')
-		cv2.imwrite(data_dir+str(frame_id)+'_'+str(y)+'person_test.png',img[c1[1]:c2[1],c1[0]:c2[0],:])
+		#cv2.imwrite(data_dir+str(frame_id)+'_'+str(y)+'person_test.png',img[c1[1]:c2[1],c1[0]:c2[0],:])
 	#color = random.choice(colors)
 	#cv2.rectangle(img, c1, c2,color, 1)
 	t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
@@ -264,7 +265,7 @@ if __name__ == '__main__':
 				print('invalid output')
 				pass
 			else:
-				np.save('coord0.npy',output[:,1:5])
+				results_lst=[]
 				for i in range(0,len(output)):
 					x1=int(output[i,1])
 					y1=int(output[i,2])
@@ -277,9 +278,15 @@ if __name__ == '__main__':
 						img_temp = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB)
 						im_pil = Image.fromarray(img_temp[y1:y2,x1:x2])
 						astro_result=predict_image(im_pil)
-						if astro_result==target:
-							cv2.putText(orig_im, 'Target_found', (x1, y1), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
-				#cv2.imwrite(data_dir+'/target_found.png',orig_im)						
+						results_lst.append(astro_result)
+						#if astro_result==target:
+							#cv2.putText(orig_im, 'Target_found', (x1, y1), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
+				#cv2.imwrite(data_dir+'/target_found.png',orig_im)
+					else:
+						results_lst.append(class_num)
+				results_lst=np.reshape(results_lst,(len(results_lst),1))
+				np.save('coord0.npy',np.concatenate((output[:,1:5],results_lst),axis=1))
+						
 
 						 
 				

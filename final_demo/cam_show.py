@@ -9,7 +9,7 @@ import time
 import pickle as pkl
 import random
 inp_dim=160
-
+target=['luke','eduardo','not even a person']
 def prep_image(img, inp_dim):
 	"""
 	Prepare image for inputting to the neural network. 
@@ -39,9 +39,12 @@ while cap.isOpened():
 		except Exception as e:
 			print(e)
 		for i in range(0,len(coord)):
-			cv2.rectangle(orig_im, tuple(coord[i,0:2]), tuple(coord[i,2:4]),255, 1)
+			cv2.rectangle(orig_im, tuple(coord[i,0:2].astype(int)), tuple(coord[i,2:4].astype(int)),255, 1)
+			t_size = cv2.getTextSize(target[int(coord[i,-1])], cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
+			cv2.putText(orig_im, target[int(coord[i,-1])], (int(coord[i,0]), int(coord[i,1] + t_size[1] + 4)), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
+
 		cv2.imshow('frame',orig_im)
-		counter=(counter+1)%60
+		counter=(counter+1)%30
 		key = cv2.waitKey(1)
 		if key & 0xFF == ord('q'):
 			break

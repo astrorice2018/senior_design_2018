@@ -181,7 +181,7 @@ if __name__ == '__main__':
 			if type(output) == int:
 				frames += 1
 				with open('coord_show.txt','a') as file:
-					file.write('0,0,0,0\n')
+					file.write('0 0 0 0\n')
 				print("FPS of the video is {:5.2f}".format( frames / (time.time() - start)))
 				#cv2.imshow("frame", orig_im)
 				#key = cv2.waitKey(1)
@@ -272,7 +272,7 @@ if __name__ == '__main__':
 			#cv2.imwrite(data_dir+'/target_found.png',orig_im)						
 			if not tg_inframe:
 				with open('coord_show.txt','a') as file:
-					file.write('0,0,0,0\n')
+					file.write('0 0 0 0\n')
 						 
 				
 			#key = cv2.waitKey(1)
