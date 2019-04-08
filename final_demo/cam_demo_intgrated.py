@@ -242,6 +242,8 @@ if __name__ == '__main__':
 				y1=int(output[i,2])
 				x2=int(output[i,3])
 				y2=int(output[i,4])
+                if abs(x1-x2)<=10 or abs(y1-y2)<=10:
+                    continue
 				cv2.imwrite(data_dir+'/'+str(i)+'.png',orig_im[y1:y2,x1:x2])
 				if output[i,-1]==0:
 					img_temp = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB)

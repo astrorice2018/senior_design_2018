@@ -32,12 +32,15 @@ while cap.isOpened():
 	ret, frame = cap.read()
 	if ret:
 		orig_im, dim = prep_image(frame, inp_dim)
-		coord=np.load('coord0.npy')
+		if counter==0:
+			cv2.imwrite('/home/luke/test.png',orig_im)
+		try:
+			coord=np.load('coord0.npy')
+		except Exception as e:
+			print(e)
 		for i in range(0,len(coord)):
 			cv2.rectangle(orig_im, tuple(coord[i,0:2]), tuple(coord[i,2:4]),255, 1)
 		cv2.imshow('frame',orig_im)
-		if counter==0:
-			cv2.imwrite('/home/luke/test.png',orig_im)
 		counter=(counter+1)%60
 		key = cv2.waitKey(1)
 		if key & 0xFF == ord('q'):

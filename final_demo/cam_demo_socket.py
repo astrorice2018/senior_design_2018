@@ -1,3 +1,6 @@
+#waitkey might need to be enbaled
+
+
 from __future__ import division
 import socket 
 import time
@@ -266,6 +269,8 @@ if __name__ == '__main__':
 				y1=int(output[i,2])
 				x2=int(output[i,3])
 				y2=int(output[i,4])
+                if abs(x1-x2)<=10 or abs(y1-y2)<=10:
+                    continue
 				cv2.imwrite(data_dir+'/'+str(i)+'.png',orig_im[y1:y2,x1:x2])
 				if output[i,-1]==0:
 					#handle zero dimension error 
@@ -284,9 +289,9 @@ if __name__ == '__main__':
 				so.send(str.encode('000000'))
 						 
 				
-			key = cv2.waitKey(1)
-			if key & 0xFF == ord('q'):
-				break
+		#	key = cv2.waitKey(1)
+		#	if key & 0xFF == ord('q'):
+		#		break
 		#	frames += 1
 			print("FPS of the video is {:5.2f}".format( frames / (time.time() - start)))
 		#	with open(data_dir+'/'+'status','r') as file:
