@@ -22,7 +22,7 @@ data_dir='/home/luke/'
 target=4
 cvbb=False 
 class_num=2
-net_used='net_vest.pth'
+net_used='net_vest1.pth'
 if cvbb:
 	timeout=1
 else:

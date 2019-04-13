@@ -23,7 +23,8 @@ def prep_image(img, inp_dim):
 	#img_ = img[:,:,::-1].transpose((2,0,1)).copy()
 	#img_ = torch.from_numpy(img_).float().div(255.0).unsqueeze(0)
 	return orig_im, dim
-
+color=[0,0,0]
+scale=1
 counter=0
 cap=cv2.VideoCapture(0) 
 assert cap.isOpened(), "cannot open capture source"
@@ -39,9 +40,16 @@ while cap.isOpened():
 		except Exception as e:
 			print(e)
 		for i in range(0,len(coord)):
-			cv2.rectangle(orig_im, tuple(coord[i,0:2].astype(int)), tuple(coord[i,2:4].astype(int)),255, 1)
+			if int(coord[i,-1]) ==0:
+				color=[255,255,0]
+				scale=3
+				
+			else:
+				color=[255,0,0]
+				scale=1
+			cv2.rectangle(orig_im, tuple(coord[i,0:2].astype(int)), tuple(coord[i,2:4].astype(int)),255, scale)
 			t_size = cv2.getTextSize(target[int(coord[i,-1])], cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
-			cv2.putText(orig_im, target[int(coord[i,-1])], (int(coord[i,0]), int(coord[i,1] + t_size[1] + 4)), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
+			cv2.putText(orig_im, target[int(coord[i,-1])], (int(coord[i,0]), int(coord[i,1] + t_size[1] + 4)), cv2.FONT_HERSHEY_PLAIN, scale, color, scale);
 
 		cv2.imshow('frame',orig_im)
 		counter=(counter+1)%30
